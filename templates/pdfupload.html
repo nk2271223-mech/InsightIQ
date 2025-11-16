@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI PDF Summarizer & Quiz Maker</title>
+  <style>
+    /* NEW STYLES */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background-color: #120149; /* soft grey */
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 480px;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .title {
+      font-size: 1.9rem;
+      margin-bottom: 8px;
+      color: #b22222;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: #555;
+      margin-bottom: 25px;
+      font-size: 1.05rem;
+    }
+
+    .upload-card {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .upload-card:hover {
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .upload-btn {
+      background: #b22222;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .upload-btn:hover {
+      background: #a11f1f;
+    }
+
+    #fileName {
+      margin-top: 10px;
+      color: #555;
+      font-size: 0.9rem;
+      min-height: 20px;
+    }
+
+    .submit-btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 15px;
+      transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #e65b5b;
+    }
+
+    /* Adjusted anchor tag for better styling/visibility */
+    .back-link { 
+      display: inline-block;
+      margin-top: 20px;
+      color: #b22222;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+      color: #a11f1f;
+    }
+    
+    .error-box { 
+        background-color: #ffeaea; /* Light red/pink background for error */
+        border: 1px solid #ff4d4d; /* Red border */
+        color: #b22222; /* Text color matching the theme */
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        text-align: left;
+    }
+    .error-box .font-bold { font-weight: 700; }
+    .error-box .text-sm { font-size: 0.9rem; margin-top: 5px; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1 class="title">AI PDF Summarizer & Quiz Maker</h1>
+      <p class="subtitle">Upload your PDF and let AI handle the rest 🚀</p>
+
+      {% if error %}
+        <div class="error-box">
+          <p class="font-bold">Upload Failed:</p>
+          <p class="text-sm">{{ error }}</p>
+        </div>
+      {% endif %}
+
+      <div class="upload-card">
+        <form method="POST" action="{{url_for('pdfupload')}}" enctype="multipart/form-data" id="uploadForm">
+          <input type="file" name="pdf_file" id="pdfInput" accept=".pdf" hidden required />
+          
+          <label for="pdfInput" class="upload-btn">Choose PDF File</label>
+          
+          <p id="fileName">No file chosen</p>
+          
+          <button type="submit" class="submit-btn">Add API Key</button>
+        </form>
+      </div>
+      
+      <a href="{{ url_for('homepage') }}" class="back-link">
+          &larr; Back to Home
+      </a>
+
+    </div>
+  </div>
+
+  <script>
+    // JS to display the selected file name (API functionality remains client-side)
+    const fileInput = document.getElementById("pdfInput");
+    const fileName = document.getElementById("fileName");
+
+    fileInput.addEventListener("change", function() {
+      if (fileInput.files.length > 0) {
+        fileName.textContent = fileInput.files[0].name;
+      } else {
+        fileName.textContent = "No file chosen";
+      }
+    });
+    
+    // Note: The form submission is handled by the form's POST action to the Flask route, 
+    // so no custom JS submit handler (like the one in the demo code) is needed here.
+    // The previous form was correct: clicking the submit button triggers the Flask route.
+  </script>
+</body>
+</html>

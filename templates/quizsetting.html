@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #1a1a2e;
+            --dark-card: #16213e;
+            --text-color: #e0e0e0;
+            --accent-color: #0f3460;
+            --button-bg: #e94560;
+            --button-hover: #c23851;
+            --border-color: #0f3460;
+            --input-bg: #0f3460;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .quiz-container {
+            background-color: var(--dark-card);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .options-group {
+            display: flex;
+            justify-content: center; 
+            gap: 10px; 
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .option-radio {
+            display: none; 
+        }
+
+        .option-label {
+            padding: 12px 20px; 
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            font-size: 1em;
+            color: var(--text-color);
+            text-align: center; 
+            min-width: 80px; 
+            box-sizing: border-box;
+        }
+
+        .option-radio:checked + .option-label {
+            background-color: var(--button-bg);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-label:hover:not(.option-radio:checked + .option-label) {
+            background-color: rgba(233, 69, 96, 0.2); 
+        }
+
+        .generate-btn {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            width: 100%;
+            margin-top: 30px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        .generate-btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(233, 69, 96, 0.6);
+        }
+
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 30px;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            
+            .options-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .option-label {
+                width: 100%; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2>Generate Your Quiz</h2>
+
+        <form action="{{url_for('generate_quiz')}}" method="POST">
+            <div class="form-group">
+                <label for="num_questions">How many questions?</label>
+                <div class="options-group">
+                    <input type="radio" id="q5" name="num_questions" value="5" class="option-radio" checked>
+                    <label for="q5" class="option-label">5</label>
+
+                    <input type="radio" id="q10" name="num_questions" value="10" class="option-radio">
+                    <label for="q10" class="option-label">10</label>
+
+                    <input type="radio" id="q15" name="num_questions" value="15" class="option-radio">
+                    <label for="q15" class="option-label">15</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="difficulty">What should be the difficulty?</label>
+                <div class="options-group">
+                    <input type="radio" id="easy" name="difficulty" value="Easy" class="option-radio">
+                    <label for="easy" class="option-label">Easy</label>
+                    
+                    <input type="radio" id="medium" name="difficulty" value="Medium" class="option-radio" checked>
+                    <label for="medium" class="option-label">Medium</label>
+
+                    <input type="radio" id="hard" name="difficulty" value="Hard" class="option-radio">
+                    <label for="hard" class="option-label">Hard</label>
+                </div>
+            </div>
+            <button type="submit" class="generate-btn">Generate Quiz</button>
+        </form>
+    </div>
+</body>
+</html>

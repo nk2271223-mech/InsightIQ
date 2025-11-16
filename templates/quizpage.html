@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Quiz Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --dark-bg: #1a1a2e;
+      --dark-card: #16213e;
+      --text-color: #e0e0e0;
+      --accent-color: #0f3460;
+      --button-bg: #e94560;
+      --button-hover: #c23851;
+      --border-color: #0f3460;
+      --input-bg: #0f3460;
+      --right: #35ffad;
+      --wrong: #ff5959;
+    }
+    body {
+      font-family: Roboto, sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-color);
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .quiz-container {
+      background-color: var(--dark-card);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 460px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    .progress-bar {
+      background: var(--input-bg);
+      border-radius: 7px;
+      height: 10px;
+      width: 100%;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background: var(--button-bg);
+      height: 100%;
+      width: 0;
+      border-radius: 7px;
+      transition: width 0.5s;
+    }
+    .question-index {
+      color: var(--accent-color);
+      font-family: Montserrat, sans-serif;
+      font-size: 1.03em;
+      margin-bottom: 12px;
+    }
+    .question-text {
+      font-size: 1.17em;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 22px;
+      font-family: Montserrat, sans-serif;
+    }
+    .choices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+    .choice-label {
+      background-color: var(--input-bg);
+      color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid var(--border-color);
+      font-size: 1.05em;
+      font-family: Montserrat, sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .choice-label:hover, .choice-label.selected {
+      background: var(--button-bg);
+      color: #fff;
+      border-color: var(--button-bg);
+      transform: scale(1.04);
+      box-shadow: 0 4px 20px rgba(233, 69, 96, 0.22);
+    }
+    .choice-label.right {
+      background-color: var(--right) !important;
+      color: #18283f;
+      border-color: var(--right);
+    }
+    .choice-label.wrong {
+      background-color: var(--wrong) !important;
+      color: #fff;
+      border-color: var(--wrong);
+    }
+    .action-btn {
+      background-color: var(--button-bg);
+      color: #fff;
+      border: none;
+      padding: 14px 0;
+      border-radius: 10px;
+      font-size: 1.13em;
+      font-family: Montserrat, sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 16px;
+      letter-spacing: 1px;
+      transition: background-color 0.2s, transform 0.11s;
+      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.15);
+    }
+    .action-btn:hover {
+      background-color: var(--button-hover);
+      transform: scale(1.018);
+    }
+    .result-card {
+      background-color: #0f1933;
+      color: var(--button-bg);
+      padding: 26px;
+      margin-top: 30px;
+      border-radius: 11px;
+      font-size: 1.16em;
+      font-family: Montserrat, sans-serif;
+      font-weight: 600;
+      border: 2px solid var(--button-bg);
+      box-shadow: 0 5px 24px rgba(233, 69, 96, 0.1);
+    }
+    .rationale-box {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #2b3950;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div id="quizBox"><h2>⚙️ Loading quiz...</h2></div>
+    <div id="footer" style="margin-top:5px;"></div>
+  </div>
+
+  <script>
+    // --- Safe JSON injection ---
+    let quizData = {};
+    let mcqQuiz = [];
+
+    try {
+      const raw = `{{ quiz_json | tojson | safe }}`;  // ensures proper escaping
+      quizData = JSON.parse(raw);
+
+      if (!quizData || !Array.isArray(quizData.questions)) {
+        throw new Error("Invalid quiz structure");
+      }
+
+      mcqQuiz = quizData.questions;
+    } catch (err) {
+      console.error("Error parsing quiz data:", err);
+      document.getElementById("quizBox").innerHTML =
+        "<h2 style='color:#ff5959;'>Failed to load quiz. Please try again.</h2>";
+      mcqQuiz = [];
+    }
+
+    // --- Quiz Logic ---
+    let step = 0, score = 0, selectedIndex = null, submitted = false;
+
+    function showQuestion() {
+      if (mcqQuiz.length === 0) return;
+
+      const q = mcqQuiz[step];
+      let html = `
+        <div class="question-index">Question ${step + 1} of ${mcqQuiz.length}</div>
+        <div class="question-text">${q.question}</div>
+        <div class="choices-list">
+      `;
+
+      (q.answerOptions || []).forEach((option, index) => {
+        html += `
+          <div class="choice-label" data-index="${index}" onclick="selectChoice(this, ${index})">
+            ${option.text}
+          </div>
+        `;
+      });
+
+      html += `
+        </div>
+        <button class="action-btn" onclick="submitAnswer()">
+          ${submitted ? (step < mcqQuiz.length - 1 ? "Next" : "Finish") : "Submit Answer"}
+        </button>
+      `;
+
+      document.getElementById("quizBox").innerHTML = html;
+      document.getElementById("progressFill").style.width = `${
+        ((step + 1) / mcqQuiz.length) * 100
+      }%`;
+      document.getElementById("footer").innerHTML = "";
+    }
+
+    function selectChoice(el, index) {
+      if (submitted) return;
+      document.querySelectorAll(".choice-label").forEach(b => b.classList.remove("selected"));
+      el.classList.add("selected");
+      selectedIndex = index;
+    }
+
+    function submitAnswer() {
+      if (submitted) {
+        if (step < mcqQuiz.length - 1) {
+          step++;
+          selectedIndex = null;
+          submitted = false;
+          showQuestion();
+        } else {
+          showResults();
+        }
+        return;
+      }
+
+      if (selectedIndex === null) {
+        document.getElementById("footer").innerHTML =
+          `<span style="color:var(--button-bg);font-weight:bold;">Please select an answer!</span>`;
+        return;
+      }
+
+      submitted = true;
+      const q = mcqQuiz[step];
+      const selectedOption = q.answerOptions[selectedIndex];
+      let isCorrect = false;
+      let correctOptionText = "";
+      let rationaleText = selectedOption?.rationale || "No rationale provided.";
+
+      document.querySelectorAll(".choice-label").forEach(label => {
+        const idx = parseInt(label.getAttribute("data-index"));
+        const opt = q.answerOptions[idx];
+
+        if (opt.isCorrect) {
+          label.classList.add("right");
+          correctOptionText = opt.text;
+          rationaleText = opt.rationale || rationaleText;
+          if (idx === selectedIndex) isCorrect = true;
+        }
+
+        if (idx === selectedIndex && !opt.isCorrect) {
+          label.classList.add("wrong");
+        }
+      });
+
+      if (isCorrect) score++;
+
+      const feedbackHTML = `
+        ${isCorrect
+          ? `<span style="color:var(--right);font-weight:bold;">✔️ Correct!</span>`
+          : `<span style="color:var(--wrong);font-weight:bold;">❌ Wrong.</span>`}
+        <div class="rationale-box">
+          <b style="color:var(--right);">Correct Answer:</b> ${correctOptionText}<br>
+          <b style="color:var(--button-bg);">Rationale:</b> ${rationaleText}
+        </div>
+      `;
+      document.getElementById("footer").innerHTML = feedbackHTML;
+
+      document.querySelector(".action-btn").textContent =
+        step < mcqQuiz.length - 1 ? "Next Question" : "View Results";
+    }
+
+    function showResults() {
+      document.getElementById("quizBox").innerHTML = `
+        <div class="result-card">
+          <b>🏁 Quiz Finished!</b><br><br>
+          You scored <span style="color:var(--button-bg);font-size:1.38em;">${score} / ${mcqQuiz.length}</span>
+          <br><br>
+          <button class="action-btn" onclick="window.location.href='/'">Go Back Home</button>
+        </div>
+      `;
+      document.getElementById("progressFill").style.width = "100%";
+      document.getElementById("footer").textContent = "";
+    }
+
+    if (mcqQuiz.length > 0) showQuestion();
+  </script>
+</body>
+</html>

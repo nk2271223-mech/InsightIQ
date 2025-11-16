@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InsightIQ</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- GSAP for Scroll Effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root {
+      --dark-bg: #1a1a2e;
+      --dark-card: #16213e;
+      --text-color: #e0e0e0;
+      --accent-color: #0f3460;
+      --button-bg: #e94560;
+      --button-hover: #c23851;
+      --border-color: #0f3460;
+      --input-bg: #0f3460;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+      background-color: var(--dark-bg);
+      font-family: 'Roboto', sans-serif;
+      color: var(--text-color);
+    }
+
+    section {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      scroll-snap-align: start;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Overlay */
+    section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 10, 25, 0.75);
+      backdrop-filter: blur(2px);
+      z-index: 0;
+    }
+
+    h1, h2, p, ul, button {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 5rem;
+      color: var(--button-bg);
+      text-shadow: 0 0 25px rgba(233, 69, 96, 0.6);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--button-bg);
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      width: 80%;
+      max-width: 900px;
+      line-height: 1.7;
+      color: #dcdcdc;
+    }
+
+    ul {
+      list-style: none;
+      font-size: 1.3rem;
+      text-align: left;
+      background-color: rgba(22, 33, 62, 0.7);
+      border-radius: 12px;
+      padding: 20px 30px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    li {
+      margin: 10px 0;
+      color: var(--text-color);
+    }
+
+    .scroll-down {
+      position: absolute;
+      bottom: 20px;
+      font-size: 1rem;
+      color: #aaa;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Enter Button */
+    .enter-btn {
+      background-color: var(--button-bg);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 8px;
+      font-size: 1.5rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
+    }
+
+    .enter-btn:hover {
+      background-color: var(--button-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(233, 69, 96, 0.6);
+    }
+
+    /* Fade effect */
+    .fade {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+
+    .fade.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 3rem;
+      }
+      h2 {
+        font-size: 2rem;
+      }
+      p, ul {
+        font-size: 1.1rem;
+        width: 90%;
+      }
+      .enter-btn {
+        font-size: 1.2rem;
+        padding: 12px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slide 1 -->
+  <section style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1470&q=80');">
+    <h1 class="fade visible">InsightIQ</h1>
+    <p class="scroll-down">Scroll down ↓</p>
+  </section>
+
+  <!-- Slide 2 -->
+  <section style="background-image: url('https://images.unsplash.com/photo-1535223289827-42f1e9919769?auto=format&fit=crop&w=1470&q=80');">
+    <h2 class="fade">PDF Summariser and Quiz Maker</h2>
+    <p class="fade">
+      InsightIQ is an AI-powered learning platform that transforms your PDFs into concise summaries
+      and automatically creates interactive quizzes. It helps you learn faster, retain better,
+      and track your understanding — all in one smart interface.
+    </p>
+  </section>
+
+  <!-- Slide 3 -->
+  <section style="background-image: url('https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1470&q=80');">
+    <h2 class="fade">Key Features</h2>
+    <ul class="fade">
+      <li>📘 Upload and summarize PDFs instantly</li>
+      <li>🧠 AI-powered quiz generation</li>
+      <li>⚡ Instant result and performance insights</li>
+      <li>🎯 Personalized study recommendations</li>
+    </ul>
+  </section>
+
+  <!-- Slide 4 -->
+  <section style="background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1470&q=80');">
+    <form action="{{url_for('pdfupload')}}" method="GET">
+      <button class="enter-btn fade" onclick="window.location.href='pdfupload.html'">Enter</button>
+    </form>
+  </section>
+
+  <script>
+    // GSAP scroll effects
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray("section").forEach((section) => {
+      const elements = section.querySelectorAll(".fade");
+      elements.forEach((el) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.5,
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+              toggleActions: "play none none reverse"
+            }
+          }
+        );
+      });
+    });
+  </script>
+
+</body>
+</html>

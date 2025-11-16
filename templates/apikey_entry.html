@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enter API Key</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+        
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(20, 20, 20, 0.9);
+            padding: 50px 80px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 0, 0, 0.4);
+            font-size: 22px;
+            max-width: 90%;
+            margin: 20px;
+        }
+
+        label {
+            color: #ff4040;
+            font-size: 35px;
+            text-shadow: 0 0 15px #ff0000;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        /* Using type="password" for the key input is more secure */
+        input[type="password"] {
+            font-size: 20px;
+            padding: 10px 15px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            background: #1a1a1a;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+        }
+
+        a {
+            color: #ff4040;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        a:hover {
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        button {
+            margin-top: 30px;
+            padding: 12px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(90deg, #ff0000, #b30000);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.9);
+            transform: scale(1.05);
+        }
+
+        .error-message {
+            color: #ff4040;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        {% if error %}
+            <div class="error-message">Error: {{ error }}</div>
+        {% endif %}
+
+        <!-- The action links to the Flask route /apikey-entry, method="POST" is required -->
+        <form method="POST" action="{{ url_for('apikey_entry') }}">
+            
+            <label for="gemini_api_key">Enter API Key</label>
+            
+            <!-- CRITICAL: name="gemini_api_key" matches request.form.get in app.py -->
+            <input type="password" id="gemini_api_key" name="gemini_api_key" required placeholder="Paste your key here">
+            
+            <br>
+            If you need a key, you can create one here:
+            <br>
+            <a href="https://aistudio.google.com/api-keys" target="_blank">Generate API Key</a>
+            
+            <br>
+            <!-- type="submit" automatically sends the form data -->
+            <button type="submit">Summarize Document</button>
+        </form>
+    </div>
+</body>
+</html>
