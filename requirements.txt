@@ -1,0 +1,10 @@
+Flask
+requests
+python-dotenv
+gunicorn
+
+# High-performance PDF text extraction library (PyMuPDF)
+PyMuPDF
+
+# For future or current use of the Google GenAI SDK
+google-genai
